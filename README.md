@@ -10,7 +10,7 @@
 | Release | Module | Description |
 | ------ | ------ | ------ |
 | 2/9/2019 | `Bopen` |Reading files backward|
-| 9/28/2019 | `Subnetting` | Calculating network, broadcast address and the hosts range |
+| 9/28/2019 | `PySubet` | Calculating the network + broadcast address and the hosts range |
 
 ### Author :
 ---
