@@ -31,15 +31,27 @@ Mask = {
 }
 
 def getnetworkaddr(address=None, netmask=None, auto=False): # Get the network address
-	if auto: 
+	if auto and ( address or netmask ): 
+		raise ValueError("too many arguments once once auto is set to True")
+	elif auto:
 		import sys
 		if sys.platform=='win32':
-			pass
+
+			import subprocess
+			
+			netmaski = subprocess.check_output(["ipconfig"]).decode()
+			
+			try:
+				netmask = netmaski.split("Subnet Mask . . . . . . . . . . . : ")[1].split("\r\n")[0]
+				address = netmaski.split("IPv4 Address. . . . . . . . . . . : ")[1].split("\r\n")[0]
+			except IndexError:
+				raise SystemError("Unable to identify the subnet mask and the local IPv4")
 		elif sys.platform=="linux":
 			pass
 		else:
 			raise SystemError("Unsupported platform : %s" % sys.platform)
-		return
+	elif not address or not netmask:
+		raise TypeError("getrangeaddr() missing 2 positional arguments: 'address' and 'netmask'")
 
 	import ipaddress, socket 
 
@@ -64,15 +76,27 @@ def getnetworkaddr(address=None, netmask=None, auto=False): # Get the network ad
 
 
 def getbroadcast(address=None, netmask=None, auto=False): # Get the broadcast address
-	if auto: 
+	if auto and ( address or netmask ): 
+		raise ValueError("too many arguments once once auto is set to True")
+	elif auto:
 		import sys
 		if sys.platform=='win32':
-			pass
+
+			import subprocess
+			
+			netmaski = subprocess.check_output(["ipconfig"]).decode()
+			
+			try:
+				netmask = netmaski.split("Subnet Mask . . . . . . . . . . . : ")[1].split("\r\n")[0]
+				address = netmaski.split("IPv4 Address. . . . . . . . . . . : ")[1].split("\r\n")[0]
+			except IndexError:
+				raise SystemError("Unable to identify the subnet mask and the local IPv4")
 		elif sys.platform=="linux":
 			pass
 		else:
 			raise SystemError("Unsupported platform : %s" % sys.platform)
-		return
+	elif not address or not netmask:
+		raise TypeError("getbroadcast() missing 2 positional arguments: 'address' and 'netmask'")
 
 	import ipaddress, socket 
 
@@ -101,15 +125,27 @@ def getbroadcast(address=None, netmask=None, auto=False): # Get the broadcast ad
 
 
 def getrangeaddr(address=None, netmask=None, auto=False): # Get the hosts range in the current network
-	if auto: 
+	if auto and ( address or netmask ): 
+		raise ValueError("too many arguments once once auto is set to True")
+	elif auto:
 		import sys
 		if sys.platform=='win32':
-			pass
+
+			import subprocess
+			
+			netmaski = subprocess.check_output(["ipconfig"]).decode()
+			
+			try:
+				netmask = netmaski.split("Subnet Mask . . . . . . . . . . . : ")[1].split("\r\n")[0]
+				address = netmaski.split("IPv4 Address. . . . . . . . . . . : ")[1].split("\r\n")[0]
+			except IndexError:
+				raise SystemError("Unable to identify the subnet mask and the local IPv4")
 		elif sys.platform=="linux":
 			pass
 		else:
 			raise SystemError("Unsupported platform : %s" % sys.platform)
-		return
+	elif not address or not netmask:
+		raise TypeError("getrangeaddr() missing 2 positional arguments: 'address' and 'netmask'")
 
 	import ipaddress, socket 
 
@@ -143,5 +179,3 @@ def getrangeaddr(address=None, netmask=None, auto=False): # Get the hosts range 
 		".".join(map(str, address)),
 		".".join(map(str, octet))
 	)
-
-getrangeaddr("192.168.0.1", "255.255.255.0")
