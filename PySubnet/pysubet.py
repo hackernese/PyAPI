@@ -31,29 +31,41 @@ Mask = {
 }
 
 def getnetworkaddr(address=None, netmask=None, auto=False): # Get the network address
-	if auto and ( address or netmask ): 
+	if auto and ( address or netmask ):
 		raise ValueError("too many arguments once once auto is set to True")
 	elif auto:
 		import sys
 		if sys.platform=='win32':
 
 			import subprocess
-			
+
 			netmaski = subprocess.check_output(["ipconfig"]).decode()
-			
+
 			try:
 				netmask = netmaski.split("Subnet Mask . . . . . . . . . . . : ")[1].split("\r\n")[0]
 				address = netmaski.split("IPv4 Address. . . . . . . . . . . : ")[1].split("\r\n")[0]
 			except IndexError:
 				raise SystemError("Unable to identify the subnet mask and the local IPv4")
 		elif sys.platform=="linux":
-			pass
+
+			import subprocess
+
+			ip_out = subprocess.Popen(['ip',  '-o', '-f', 'inet', 'addr', 'show'], stdout=subprocess.PIPE)
+			split  = subprocess.Popen(['awk', '/scope global/ {print $4}'], stdin=ip_out.stdout, stdout=subprocess.PIPE)
+			addresses, stderr = split.communicate()
+
+			if not addresses:
+				raise SystemError("Unable to identify the subnet mask and the local IPv4")
+
+			(address, netmask) = addresses.decode().split("/")
+
+			netmask = [mask for mask, valuec in Mask.items() if valuec==int(netmask)][0]
 		else:
 			raise SystemError("Unsupported platform : %s" % sys.platform)
 	elif not address or not netmask:
 		raise TypeError("getrangeaddr() missing 2 positional arguments: 'address' and 'netmask'")
 
-	import ipaddress, socket 
+	import ipaddress, socket
 
 	try:
 		socket.inet_aton(address)
@@ -67,38 +79,50 @@ def getnetworkaddr(address=None, netmask=None, auto=False): # Get the network ad
 		raise TypeError("Not a private address %s " % address)
 
 	address = [(maskoct & addroct) for maskoct, addroct in zip(
-			map(int , netmask.split(".")), 
+			map(int , netmask.split(".")),
 			map(int , address.split("."))
 		)
 	]
-	
+
 	return ".".join(map(str, address))
 
 
 def getbroadcast(address=None, netmask=None, auto=False): # Get the broadcast address
-	if auto and ( address or netmask ): 
+	if auto and ( address or netmask ):
 		raise ValueError("too many arguments once once auto is set to True")
 	elif auto:
 		import sys
 		if sys.platform=='win32':
 
 			import subprocess
-			
+
 			netmaski = subprocess.check_output(["ipconfig"]).decode()
-			
+
 			try:
 				netmask = netmaski.split("Subnet Mask . . . . . . . . . . . : ")[1].split("\r\n")[0]
 				address = netmaski.split("IPv4 Address. . . . . . . . . . . : ")[1].split("\r\n")[0]
 			except IndexError:
 				raise SystemError("Unable to identify the subnet mask and the local IPv4")
 		elif sys.platform=="linux":
-			pass
+
+			import subprocess
+
+			ip_out = subprocess.Popen(['ip',  '-o', '-f', 'inet', 'addr', 'show'], stdout=subprocess.PIPE)
+			split  = subprocess.Popen(['awk', '/scope global/ {print $4}'], stdin=ip_out.stdout, stdout=subprocess.PIPE)
+			addresses, stderr = split.communicate()
+
+			if not addresses:
+				raise SystemError("Unable to identify the subnet mask and the local IPv4")
+
+			(address, netmask) = addresses.decode().split("/")
+
+			netmask = [mask for mask, valuec in Mask.items() if valuec==int(netmask)][0]
 		else:
 			raise SystemError("Unsupported platform : %s" % sys.platform)
 	elif not address or not netmask:
 		raise TypeError("getbroadcast() missing 2 positional arguments: 'address' and 'netmask'")
 
-	import ipaddress, socket 
+	import ipaddress, socket
 
 	try:
 		socket.inet_aton(address)
@@ -119,35 +143,47 @@ def getbroadcast(address=None, netmask=None, auto=False): # Get the broadcast ad
 		int(octet[16:24],2),
 		int(octet[24:]  ,2)
 	]
-	
+
 	return ".".join(map(str, octet))
 
 
 
 def getrangeaddr(address=None, netmask=None, auto=False): # Get the hosts range in the current network
-	if auto and ( address or netmask ): 
+	if auto and ( address or netmask ):
 		raise ValueError("too many arguments once once auto is set to True")
 	elif auto:
 		import sys
 		if sys.platform=='win32':
 
 			import subprocess
-			
+
 			netmaski = subprocess.check_output(["ipconfig"]).decode()
-			
+
 			try:
 				netmask = netmaski.split("Subnet Mask . . . . . . . . . . . : ")[1].split("\r\n")[0]
 				address = netmaski.split("IPv4 Address. . . . . . . . . . . : ")[1].split("\r\n")[0]
 			except IndexError:
 				raise SystemError("Unable to identify the subnet mask and the local IPv4")
 		elif sys.platform=="linux":
-			pass
+
+			import subprocess
+
+			ip_out = subprocess.Popen(['ip',  '-o', '-f', 'inet', 'addr', 'show'], stdout=subprocess.PIPE)
+			split  = subprocess.Popen(['awk', '/scope global/ {print $4}'], stdin=ip_out.stdout, stdout=subprocess.PIPE)
+			addresses, stderr = split.communicate()
+
+			if not addresses:
+				raise SystemError("Unable to identify the subnet mask and the local IPv4")
+
+			(address, netmask) = addresses.decode().split("/")
+
+			netmask = [mask for mask, valuec in Mask.items() if valuec==int(netmask)][0]
 		else:
 			raise SystemError("Unsupported platform : %s" % sys.platform)
 	elif not address or not netmask:
 		raise TypeError("getrangeaddr() missing 2 positional arguments: 'address' and 'netmask'")
 
-	import ipaddress, socket 
+	import ipaddress, socket
 
 	try:
 		socket.inet_aton(address)
@@ -169,7 +205,7 @@ def getrangeaddr(address=None, netmask=None, auto=False): # Get the hosts range 
 		int(octet[24:]  ,2)-1
 	]
 	address = [(maskoct & addroct) for maskoct, addroct in zip(  # Extracting the network address
-			map(int , netmask.split(".")), 
+			map(int , netmask.split(".")),
 			map(int , address.split("."))
 		)
 	]
