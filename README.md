@@ -11,7 +11,7 @@
 | ------ | ------ | ------ |
 | 2/09/2019 | `Bopen` |Reading files backward|
 | 9/28/2019 | `PySubet` | Calculate the network + broadcast address and the hosts range |
-| 3/02/2020 | `Pywinreg` | Winreg but with a all-registry enumerating function |
+| 3/02/2020 | `Pywinreg` | Winreg but with an all-registry enumerating function |
 
 ### Author :
 ---
