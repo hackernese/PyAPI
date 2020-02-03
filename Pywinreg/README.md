@@ -1,6 +1,6 @@
 # Pywinreg
 ---
--  Basically winreg but with an enumerating feature which collects all sub-registry and registry paths of a specific registry ( including hive ) 
+-  Basically winreg but with an enumerating feature which collects all sub-registry and registry paths of a specific registry ( including hive )  
 -  Version 0.1 
 #### Manual :
 ---
@@ -19,8 +19,8 @@ class EnumRegistry:
         self.root     = __class__.Hives[root]
     ...
 ```
-- **root** : name of the hive/root registry you wanna enumerate ( Ex : "HKEY_LOCAL_MACHINE", "HKEY_CURRENT_CONFIG", ... )
-- **strict** : define whether the enumeration requires strict rule, exception or not ( `True` or `False` ) 
+- *root* : name of the hive/root registry you wanna enumerate ( Ex : "HKEY_LOCAL_MACHINE", "HKEY_CURRENT_CONFIG", ... )
+- *strict* : define whether the enumeration requires strict rule, exception or not ( `True` or `False` ) 
     - `True` : Enumerate with strict rule, means if there is an error it will instantly raise it 
     - `False` : Enumerate loosely, means there will be some errors which once encountered, it won't be raised ( like `PermissionError` which is encountered once you enumerate a registry without escalated or suited privilege )
 ##### How to initialize : 
@@ -36,9 +36,9 @@ regobj = pywinreg.EnumRegistry("hive") # Create an instance to enumerate
     def EnumRootKey(self):
         ...
 ```
-+ ###### `ignore "self", when you use the function you can see it with only one parameter and any value you pass in will be placed into KeyName`
++ ( ignore "self", when you use the function you can see it with only one parameter and any value you pass in will be placed into KeyName )
 + **EnumRegKey** : Enumerate through a specific registry and collect its sub-registries
-    + **KeyName** : name of a specific registry you wanna enumerate ( if it's a sub-registry you need to pass in the full path )
+    + *KeyName* : name of a specific registry you wanna enumerate ( if it's a sub-registry you need to pass in the full path )
 + **EnumRootKey** : Enumerate through an entire hive ( root registry )
     + ( No value should be passed, it will automatically enumerate once it's simply called )
 ##### How to call : 
